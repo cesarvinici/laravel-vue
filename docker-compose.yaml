@@ -1,0 +1,47 @@
+version: "3.7"
+
+services:
+  app:
+    build:
+      args:
+        user: csv
+        uid: 1000
+      context: ./
+      dockerfile: Dockerfile
+    image: csvjur
+    container_name: cvsjur
+    restart: unless-stopped
+    working_dir: /var/www/
+    volumes:
+      - ./:/var/www
+    networks:
+      - cvsjur-net
+  db:
+    image: mysql:5.7
+    container_name: cvsjur-db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_USER: ${DB_USERNAME}
+    ports:
+      - 3306:3306
+    networks:
+      - cvsjur-net
+  nginx:
+    image:  nginx:alpine
+    container_name: cvsjur-nginx
+    restart: unless-stopped
+    ports:
+      - 80:80
+    volumes:
+      - ./:/var/www
+      - ./nginx:/etc/nginx/conf.d
+    networks:
+      - cvsjur-net
+
+
+networks:
+    cvsjur-net:
+      driver: bridge
