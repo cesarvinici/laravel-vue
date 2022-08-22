@@ -9,16 +9,16 @@ services:
       context: ./
       dockerfile: Dockerfile
     image: csvjur
-    container_name: cvsjur
+    container_name: laravel-app
     restart: unless-stopped
     working_dir: /var/www/
     volumes:
       - ./:/var/www
     networks:
-      - cvsjur-net
+      - laravel-net
   db:
     image: mysql:5.7
-    container_name: cvsjur-db
+    container_name: laravel-db
     restart: unless-stopped
     environment:
       MYSQL_DATABASE: ${DB_DATABASE}
@@ -28,10 +28,10 @@ services:
     ports:
       - 3306:3306
     networks:
-      - cvsjur-net
+      - laravel-net
   nginx:
     image:  nginx:alpine
-    container_name: cvsjur-nginx
+    container_name: laravel-nginx
     restart: unless-stopped
     ports:
       - 80:80
@@ -39,9 +39,9 @@ services:
       - ./:/var/www
       - ./nginx:/etc/nginx/conf.d
     networks:
-      - cvsjur-net
+      - laravel-net
 
 
 networks:
-    cvsjur-net:
-      driver: bridge
+  laravel-net:
+    driver: bridge
